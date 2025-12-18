@@ -1,0 +1,74 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+  
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply bg-dark-bg text-text-primary font-sans antialiased;
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(79, 156, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-surface;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-electric-blue rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neon-violet;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-gradient-to-r from-electric-blue via-neon-violet to-cyan-highlight bg-clip-text text-transparent;
+  }
+  
+  .glass-card {
+    @apply bg-dark-surface/50 backdrop-blur-md border border-dark-surface-2/50 rounded-xl;
+  }
+  
+  .glow-border {
+    @apply relative;
+  }
+  
+  .glow-border::before {
+    content: '';
+    @apply absolute inset-0 rounded-xl bg-gradient-to-r from-electric-blue/20 via-neon-violet/20 to-cyan-highlight/20 p-[1px];
+  }
+  
+  .glow-border > * {
+    @apply relative bg-dark-surface rounded-xl;
+  }
+  
+  .btn-primary {
+    @apply px-8 py-4 bg-gradient-to-r from-electric-blue to-neon-violet text-white font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-electric-blue/25 hover:scale-105;
+  }
+  
+  .btn-secondary {
+    @apply px-8 py-4 glass-card text-text-primary font-medium rounded-lg transition-all duration-300 hover:bg-dark-surface-2/70 border-electric-blue/30 hover:border-electric-blue/50;
+  }
+}
+
+@layer utilities {
+  .text-shadow-glow {
+    text-shadow: 0 0 20px rgba(79, 156, 255, 0.5);
+  }
+}
