@@ -8,7 +8,7 @@ export default {
     extend: {
       colors: {
         // Dark background system
-        'dark-bg': '#0B0F14',
+        'dark-bg': '#242424',
         'dark-surface': '#121826',
         'dark-surface-2': '#161B2E',
         
