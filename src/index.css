@@ -2,68 +2,127 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Import Neue Montreal font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('https://pangrampangram.com/font/neue-montreal/NeueMontreal-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('https://pangrampangram.com/font/neue-montreal/NeueMontreal-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('https://pangrampangram.com/font/neue-montreal/NeueMontreal-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+
 @layer base {
   * {
-    @apply box-border;
+    box-sizing: border-box;
   }
   
   html {
-    @apply scroll-smooth;
+    scroll-behavior: smooth;
   }
   
   body {
-    @apply bg-dark-bg text-text-primary font-sans antialiased;
-    background-image: 
-      radial-gradient(circle at 25% 25%, rgba(79, 156, 255, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    background-color: #F6F7F5;
+    color: #0F0F0F;
+    font-family: Inter, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
   
   /* Custom scrollbar */
   ::-webkit-scrollbar {
-    @apply w-2;
+    width: 8px;
   }
   
   ::-webkit-scrollbar-track {
-    @apply bg-dark-surface;
+    background-color: #EEF3ED;
   }
   
   ::-webkit-scrollbar-thumb {
-    @apply bg-electric-blue rounded-full;
+    background-color: #C7F000;
+    border-radius: 9999px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-neon-violet;
+    background-color: #8B5CF6;
   }
 }
 
 @layer components {
   .gradient-text {
-    @apply bg-gradient-to-r from-electric-blue via-neon-violet to-cyan-highlight bg-clip-text text-transparent;
+    background: linear-gradient(to right, #C7F000, #8B5CF6, #22D3EE);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   
   .glass-card {
-    @apply bg-dark-surface/50 backdrop-blur-md border border-dark-surface-2/50 rounded-xl;
+    background-color: rgba(238, 243, 237, 0.5);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(229, 231, 235, 0.5);
+    border-radius: 12px;
   }
   
   .glow-border {
-    @apply relative;
+    position: relative;
   }
   
   .glow-border::before {
     content: '';
-    @apply absolute inset-0 rounded-xl bg-gradient-to-r from-electric-blue/20 via-neon-violet/20 to-cyan-highlight/20 p-[1px];
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: linear-gradient(to right, rgba(199, 240, 0, 0.2), rgba(139, 92, 246, 0.2), rgba(34, 211, 238, 0.2));
+    padding: 1px;
   }
   
   .glow-border > * {
-    @apply relative bg-dark-surface rounded-xl;
+    position: relative;
+    background-color: #EEF3ED;
+    border-radius: 12px;
   }
   
   .btn-primary {
-    @apply px-8 py-4 bg-gradient-to-r from-electric-blue to-neon-violet text-white font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-electric-blue/25 hover:scale-105;
+    padding: 16px 32px;
+    background: linear-gradient(to right, #C7F000, #8B5CF6);
+    color: white;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 300ms;
+  }
+  
+  .btn-primary:hover {
+    box-shadow: 0 10px 15px -3px rgba(199, 240, 0, 0.25);
+    transform: scale(1.05);
   }
   
   .btn-secondary {
-    @apply px-8 py-4 glass-card text-text-primary font-medium rounded-lg transition-all duration-300 hover:bg-dark-surface-2/70 border-electric-blue/30 hover:border-electric-blue/50;
+    padding: 16px 32px;
+    background-color: rgba(238, 243, 237, 0.5);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(229, 231, 235, 0.5);
+    color: #0F0F0F;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 300ms;
+  }
+  
+  .btn-secondary:hover {
+    background-color: rgba(229, 231, 235, 0.7);
+    border-color: rgba(199, 240, 0, 0.5);
   }
 }
 

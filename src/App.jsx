@@ -2,25 +2,42 @@ import { motion } from "framer-motion";
 import Navigation from "./components/Navigation";
 import Hero from "./components/Hero";
 import About from "./components/About";
-import WebShowcases from "./components/WebShowcases";
 import Experience from "./components/Experience";
+import RecentWork from "./components/RecentWork";
 import Skills from "./components/Skills";
-import Projects from "./components/Projects";
-import Contact from "./components/Contact";
-//import Footer from './components/Footer';
+import Journey from "./components/Journey";
+import Certifications from "./components/Certifications";
+import Footer from "./components/Footer";
+
 function App() {
   return (
-    <div className="min-h-screen bg-dark-bg overflow-x-hidden">
+    <div className="min-h-screen bg-primary-bg overflow-x-hidden">
       <Navigation />
       <main>
+        {/* 1. Hero - Editorial Statement Hero */}
         <Hero />
+
+        {/* 2. About Me - Philosophy-first */}
         <About />
-        <WebShowcases />
+
+        {/* 3. Experience - Minimal vertical timeline */}
         <Experience />
+
+        {/* 4. Recent Work - Case-study cards */}
+        <RecentWork />
+
+        {/* 5. Skills - Capability buckets */}
         <Skills />
-        <Projects />
-        <Contact />
+
+        {/* 6. Journey - Reflective timeline */}
+        <Journey />
+
+        {/* 7. Certifications - Inline badges */}
+        <Certifications />
       </main>
+
+      {/* 8. Footer - Editorial closing */}
+      <Footer />
     </div>
   );
 }

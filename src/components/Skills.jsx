@@ -1,227 +1,237 @@
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef, useState } from 'react'
+import { useRef, useEffect, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Skills = () => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const [activeCategory, setActiveCategory] = useState('frontend')
+  const sectionRef = useRef(null);
+  const bucketsRef = useRef(null);
+  const [hoveredBucket, setHoveredBucket] = useState(null);
 
-  const skillCategories = {
-    frontend: {
-      title: "Frontend Development",
-      icon: "⚛️",
+  const capabilities = [
+    {
+      id: "design",
+      title: "Design Excellence",
+      description: "User-centered design with systematic thinking",
       skills: [
-        { name: "React", level: 95, description: "Advanced component architecture, hooks, context" },
-        { name: "TypeScript", level: 90, description: "Type-safe development, advanced patterns" },
-        { name: "JavaScript (ES6+)", level: 95, description: "Modern JS, async/await, modules" },
-        { name: "HTML5 & CSS3", level: 90, description: "Semantic markup, modern CSS features" },
-        { name: "Tailwind CSS", level: 85, description: "Utility-first styling, responsive design" },
-        { name: "Framer Motion", level: 80, description: "Advanced animations, micro-interactions" }
-      ]
+        { name: "UI/UX Design", proficiency: "Expert" },
+        { name: "Design Systems", proficiency: "Expert" },
+        { name: "User Research", proficiency: "Proficient" },
+        { name: "Prototyping", proficiency: "Expert" },
+        { name: "Figma", proficiency: "Expert" },
+        { name: "Adobe Creative Suite", proficiency: "Proficient" },
+      ],
+      color: "from-accent/20 to-accent/10",
+      borderColor: "border-accent/20",
     },
-    backend: {
-      title: "Backend Development",
-      icon: "🔧",
+    {
+      id: "frontend",
+      title: "Frontend Mastery",
+      description: "Modern web technologies with performance focus",
       skills: [
-        { name: "Java", level: 90, description: "Spring Boot, REST APIs, microservices" },
-        { name: "Python", level: 85, description: "Django, Flask, data processing" },
-        { name: "Node.js", level: 80, description: "Express, RESTful services, middleware" },
-        { name: "SQL Databases", level: 85, description: "MySQL, PostgreSQL, query optimization" },
-        { name: "RESTful APIs", level: 90, description: "API design, authentication, documentation" },
-        { name: "GraphQL", level: 75, description: "Schema design, resolvers, Apollo" }
-      ]
+        { name: "React", proficiency: "Expert" },
+        { name: "TypeScript", proficiency: "Expert" },
+        { name: "JavaScript ES6+", proficiency: "Expert" },
+        { name: "HTML5 & CSS3", proficiency: "Expert" },
+        { name: "Tailwind CSS", proficiency: "Expert" },
+        { name: "GSAP", proficiency: "Proficient" },
+      ],
+      color: "from-blue-500/20 to-blue-400/10",
+      borderColor: "border-blue-400/20",
     },
-    design: {
-      title: "UI/UX & Design",
-      icon: "🎨",
+    {
+      id: "backend",
+      title: "Backend Systems",
+      description: "Scalable architecture and cloud deployment",
       skills: [
-        { name: "Figma", level: 95, description: "Advanced prototyping, design systems" },
-        { name: "Design Systems", level: 90, description: "Component libraries, design tokens" },
-        { name: "User Experience (UX)", level: 85, description: "User research, journey mapping, wireframing" },
-        { name: "User Interface (UI)", level: 90, description: "Visual design, interaction design" },
-        { name: "Responsive Design", level: 95, description: "Mobile-first, cross-device optimization" },
-        { name: "Prototyping", level: 85, description: "Interactive prototypes, user testing" }
-      ]
+        { name: "Java", proficiency: "Expert" },
+        { name: "Python", proficiency: "Proficient" },
+        { name: "Spring Boot", proficiency: "Expert" },
+        { name: "Node.js", proficiency: "Proficient" },
+        { name: "PostgreSQL", proficiency: "Proficient" },
+        { name: "AWS", proficiency: "Proficient" },
+      ],
+      color: "from-green-500/20 to-green-400/10",
+      borderColor: "border-green-400/20",
     },
-    cloud: {
-      title: "Cloud & DevOps",
-      icon: "☁️",
+    {
+      id: "collaboration",
+      title: "Collaboration & Process",
+      description: "Team leadership and project delivery",
       skills: [
-        { name: "AWS", level: 80, description: "EC2, S3, Lambda, RDS, deployment" },
-        { name: "Docker", level: 85, description: "Containerization, multi-stage builds" },
-        { name: "CI/CD", level: 75, description: "GitHub Actions, Jenkins, automated deployment" },
-        { name: "Git & GitHub", level: 95, description: "Version control, collaboration, workflows" },
-        { name: "Linux/Unix", level: 80, description: "Command line, server administration" },
-        { name: "Nginx", level: 70, description: "Web server, reverse proxy, load balancing" }
-      ]
+        { name: "Technical Leadership", proficiency: "Expert" },
+        { name: "Agile Methodologies", proficiency: "Expert" },
+        { name: "Code Review", proficiency: "Expert" },
+        { name: "Mentoring", proficiency: "Proficient" },
+        { name: "Client Communication", proficiency: "Expert" },
+        { name: "Project Management", proficiency: "Proficient" },
+      ],
+      color: "from-purple-500/20 to-purple-400/10",
+      borderColor: "border-purple-400/20",
     },
-    tools: {
-      title: "Tools & Methodologies",
-      icon: "🛠️", 
-      skills: [
-        { name: "VS Code", level: 95, description: "Advanced usage, extensions, debugging" },
-        { name: "Agile/Scrum", level: 85, description: "Sprint planning, stand-ups, retrospectives" },
-        { name: "Project Management", level: 80, description: "Jira, Trello, timeline management" },
-        { name: "Testing", level: 75, description: "Unit testing, integration testing, TDD" },
-        { name: "Performance Optimization", level: 80, description: "Code splitting, lazy loading, caching" },
-        { name: "SEO & Accessibility", level: 75, description: "WCAG compliance, semantic HTML, performance" }
-      ]
-    }
-  }
+  ];
 
-  const categories = Object.keys(skillCategories)
+  useEffect(() => {
+    const section = sectionRef.current;
+    const buckets = bucketsRef.current;
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.1
-      }
-    }
-  }
+    if (!section || !buckets) return;
 
-  const itemVariants = {
-    hidden: { y: 50, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: [0.4, 0, 0.2, 1]
-      }
-    }
-  }
+    const bucketElements = buckets.querySelectorAll("[data-capability-bucket]");
 
-  const skillVariants = {
-    hidden: { x: -20, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: [0.4, 0, 0.2, 1]
-      }
+    // Set initial states
+    gsap.set(bucketElements, {
+      opacity: 0,
+      y: 60,
+      scale: 0.95,
+    });
+
+    // Animate buckets on scroll
+    ScrollTrigger.create({
+      trigger: buckets,
+      start: "top 85%",
+      onEnter: () => {
+        gsap.to(bucketElements, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          ease: "power2.out",
+          stagger: 0.2,
+        });
+      },
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, []);
+
+  const getProficiencyColor = (proficiency) => {
+    switch (proficiency) {
+      case "Expert":
+        return "text-accent";
+      case "Proficient":
+        return "text-blue-400";
+      default:
+        return "text-secondary-text";
     }
-  }
+  };
 
   return (
-    <section id="skills" ref={ref} className="py-24 lg:py-32 relative">
-      <div className="max-w-8xl mx-auto px-6 lg:px-8">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+    <section
+      id="skills"
+      ref={sectionRef}
+      className="relative min-h-screen py-32 bg-primary-bg overflow-hidden"
+    >
+      {/* Background text */}
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+        style={{ zIndex: 0 }}
+      >
+        <h2
+          className="text-[20vw] font-black opacity-[0.02] leading-none whitespace-nowrap"
+          style={{ fontFamily: "Neue Montreal, sans-serif" }}
         >
-          {/* Section Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16 lg:mb-24">
-            <div className="inline-block px-4 py-2 glass-card text-sm font-mono text-electric-blue mb-6">
-              Technical Expertise
-            </div>
-            <h2 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl gradient-text mb-6">
-              Skills &
-              <br />
-              Technologies
-            </h2>
-            <p className="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
-              A comprehensive toolkit spanning <span className="text-text-primary font-medium">full-stack development</span>, 
-              <span className="text-text-primary font-medium"> UI/UX design</span>, and 
-              <span className="text-text-primary font-medium"> cloud technologies</span>
-            </p>
-          </motion.div>
+          CAPABILITIES
+        </h2>
+      </div>
 
-          {/* Category Tabs */}
-          <motion.div variants={itemVariants} className="mb-12">
-            <div className="flex flex-wrap justify-center gap-4">
-              {categories.map((category) => (
-                <motion.button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
-                    activeCategory === category
-                      ? 'bg-gradient-to-r from-electric-blue to-neon-violet text-white shadow-lg shadow-electric-blue/25'
-                      : 'glass-card text-text-secondary hover:text-text-primary hover:bg-dark-surface-2/70'
-                  }`}
-                >
-                  <span className="mr-2">{skillCategories[category].icon}</span>
-                  {skillCategories[category].title}
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
+      <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8">
+        {/* Section header */}
+        <div className="mb-20">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-primary-text">
+            Core Capabilities
+          </h2>
+          <p className="text-lg text-secondary-text max-w-2xl leading-relaxed">
+            Organized expertise across design, development, and delivery— built
+            through focused practice and real-world application.
+          </p>
+        </div>
 
-          {/* Skills Grid */}
-          <motion.div
-            key={activeCategory}
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {skillCategories[activeCategory].skills.map((skill, index) => (
-              <motion.div
-                key={skill.name}
-                variants={skillVariants}
-                whileHover={{ y: -4, scale: 1.02 }}
-                className="glass-card p-6 group cursor-pointer"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-heading font-semibold text-lg text-text-primary group-hover:gradient-text transition-all duration-300">
-                    {skill.name}
-                  </h3>
-                  <span className="font-mono text-sm text-electric-blue">
-                    {skill.level}%
-                  </span>
-                </div>
-                
-                <p className="text-text-secondary text-sm mb-4 leading-relaxed">
-                  {skill.description}
-                </p>
-                
-                {/* Skill Progress Bar */}
-                <div className="relative">
-                  <div className="w-full bg-dark-surface-2 rounded-full h-2 overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={isInView ? { width: `${skill.level}%` } : {}}
-                      transition={{ delay: index * 0.1 + 0.5, duration: 1.5, ease: [0.4, 0, 0.2, 1] }}
-                      className="h-full bg-gradient-to-r from-electric-blue via-neon-violet to-cyan-highlight rounded-full relative"
+        {/* Capability buckets */}
+        <div ref={bucketsRef} className="grid md:grid-cols-2 gap-8">
+          {capabilities.map((capability) => (
+            <div
+              key={capability.id}
+              data-capability-bucket
+              className={`group bg-gradient-to-br ${capability.color} backdrop-blur-sm border ${capability.borderColor} rounded-3xl p-8 hover:scale-[1.02] transition-all duration-300 cursor-pointer`}
+              onMouseEnter={() => setHoveredBucket(capability.id)}
+              onMouseLeave={() => setHoveredBucket(null)}
+            >
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold text-primary-text mb-2 group-hover:text-accent transition-colors">
+                  {capability.title}
+                </h3>
+                <p className="text-secondary-text">{capability.description}</p>
+              </div>
+
+              <div className="space-y-4">
+                {capability.skills.map((skill, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 bg-secondary-bg/20 rounded-xl backdrop-blur-sm group-hover:bg-secondary-bg/30 transition-colors"
+                  >
+                    <span className="text-primary-text font-medium">
+                      {skill.name}
+                    </span>
+                    <span
+                      className={`text-sm font-medium ${getProficiencyColor(
+                        skill.proficiency
+                      )}`}
                     >
-                      <div className="absolute inset-0 bg-gradient-to-r from-electric-blue via-neon-violet to-cyan-highlight opacity-50 blur-sm"></div>
-                    </motion.div>
+                      {skill.proficiency}
+                    </span>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Skills Summary */}
-          <motion.div variants={itemVariants} className="mt-16 lg:mt-24">
-            <div className="glass-card p-8 lg:p-12 text-center">
-              <h3 className="font-heading font-bold text-2xl lg:text-3xl gradient-text mb-4">
-                Always Learning, Always Growing
-              </h3>
-              <p className="text-text-secondary text-lg mb-6">
-                Passionate about staying current with emerging technologies and design trends. 
-                Currently exploring AI/ML integration and advanced animation techniques.
-              </p>
-              <div className="flex flex-wrap justify-center gap-3">
-                {['Next.js', 'Three.js', 'WebGL', 'AI/ML', 'Blockchain', 'AR/VR'].map((tech) => (
-                  <span key={tech} className="px-3 py-1 glass-card text-sm text-cyan-highlight font-mono">
-                    {tech}
-                  </span>
                 ))}
               </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
-    </section>
-  )
-}
 
-export default Skills
+              {hoveredBucket === capability.id && (
+                <div className="mt-6 pt-6 border-t border-accent/10">
+                  <p className="text-secondary-text text-sm italic">
+                    Hover to explore each capability in detail
+                  </p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Skills summary */}
+        <div className="mt-20 text-center">
+          <div className="inline-flex items-center gap-8 bg-secondary-bg/40 backdrop-blur-sm border border-accent/10 rounded-2xl px-8 py-6">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-accent">4+</div>
+              <div className="text-sm text-secondary-text">Core Areas</div>
+            </div>
+            <div className="w-px h-8 bg-accent/20" />
+            <div className="text-center">
+              <div className="text-2xl font-bold text-accent">24</div>
+              <div className="text-sm text-secondary-text">Key Skills</div>
+            </div>
+            <div className="w-px h-8 bg-accent/20" />
+            <div className="text-center">
+              <div className="text-2xl font-bold text-accent">2+</div>
+              <div className="text-sm text-secondary-text">
+                Years Experience
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Gradient overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 80%, rgba(199, 240, 0, 0.02) 0%, transparent 50%)",
+          zIndex: 0,
+        }}
+      />
+    </section>
+  );
+};
+
+export default Skills;

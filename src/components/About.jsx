@@ -1,162 +1,165 @@
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const About = () => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const sectionRef = useRef(null);
+  const headingRef = useRef(null);
+  const contentRef = useRef(null);
+  const backgroundTextRef = useRef(null);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1
-      }
-    }
-  }
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Section heading fade + Y
+      gsap.fromTo(
+        headingRef.current,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            end: "bottom 20%",
+          },
+        }
+      );
 
-  const itemVariants = {
-    hidden: { y: 50, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-        ease: [0.4, 0, 0.2, 1]
-      }
-    }
-  }
+      // Content fade only
+      gsap.fromTo(
+        contentRef.current,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            end: "bottom 25%",
+          },
+        }
+      );
+    }, sectionRef);
 
-  const stats = [
-    { number: "2+", label: "Years Full Stack Development" },
-    { number: "4+", label: "Months UI/UX Design Focus" },
-    { number: "10+", label: "Corporate Projects Delivered" },
-    { number: "100%", label: "Client Satisfaction Rate" }
-  ]
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section ref={ref} className="py-24 lg:py-32 relative">
-      <div className="max-w-8xl mx-auto px-6 lg:px-8">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center"
+    <section
+      ref={sectionRef}
+      id="about"
+      className="py-24 px-8 lg:px-12 bg-secondary-bg relative overflow-hidden"
+    >
+      {/* Large cropped background word */}
+      <div
+        ref={backgroundTextRef}
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{ zIndex: 0 }}
+      >
+        <div
+          className="text-primary-text/5 font-display font-medium select-none"
+          style={{
+            fontSize: "clamp(8rem, 25vw, 20rem)",
+            letterSpacing: "-0.05em",
+            lineHeight: "0.8",
+          }}
         >
-          {/* Left Content */}
-          <div>
-            <motion.div variants={itemVariants} className="mb-8">
-              <div className="inline-block px-4 py-2 glass-card text-sm font-mono text-electric-blue mb-6">
-                About Me
-              </div>
-              <h2 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl gradient-text mb-6">
-                Design-Engineer
-                <br />
-                Hybrid
-              </h2>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="space-y-6 text-text-secondary leading-relaxed">
-              <p className="text-lg">
-                I'm a passionate <span className="text-text-primary font-medium">Software Engineer</span> with 
-                a deep love for <span className="text-text-primary font-medium">UI/UX design</span> and 
-                <span className="text-text-primary font-medium"> digital product creation</span>. 
-                My unique perspective combines technical precision with design excellence.
-              </p>
-              
-              <p className="text-lg">
-                With <span className="gradient-text font-medium">2+ years of full-stack development</span> and 
-                <span className="gradient-text font-medium"> 4+ months of focused design work</span>, 
-                I bridge the gap between beautiful interfaces and robust, scalable code.
-              </p>
-              
-              <p className="text-lg">
-                I specialize in creating <span className="text-text-primary font-medium">corporate websites</span>, 
-                <span className="text-text-primary font-medium"> AI product interfaces</span>, and 
-                <span className="text-text-primary font-medium"> enterprise-grade applications</span> that 
-                prioritize both user experience and technical performance.
-              </p>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="mt-12">
-              <h3 className="font-heading font-semibold text-xl text-text-primary mb-6">Key Strengths</h3>
-              <div className="grid sm:grid-cols-2 gap-4">
-                {[
-                  { icon: "🎨", title: "UI/UX Design", desc: "Figma, Design Systems" },
-                  { icon: "⚛️", title: "Frontend Development", desc: "React, TypeScript" },
-                  { icon: "🏗️", title: "Full Stack", desc: "Java, Python, AWS" },
-                  { icon: "🚀", title: "Product Thinking", desc: "User-Centric Solutions" }
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    whileHover={{ y: -4, scale: 1.02 }}
-                    className="glass-card p-4 cursor-pointer group"
-                  >
-                    <div className="flex items-start space-x-3">
-                      <span className="text-2xl group-hover:scale-110 transition-transform">
-                        {item.icon}
-                      </span>
-                      <div>
-                        <h4 className="font-medium text-text-primary">{item.title}</h4>
-                        <p className="text-sm text-text-secondary">{item.desc}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Right Stats */}
-          <motion.div variants={itemVariants} className="relative">
-            <div className="glass-card p-8 lg:p-12 relative overflow-hidden">
-              {/* Background decoration */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-electric-blue/10 to-neon-violet/10 rounded-full blur-2xl" />
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-cyan-highlight/10 to-electric-blue/10 rounded-full blur-xl" />
-              
-              <div className="relative z-10">
-                <h3 className="font-heading font-semibold text-2xl gradient-text mb-8">
-                  By the Numbers
-                </h3>
-                
-                <div className="grid grid-cols-2 gap-8">
-                  {stats.map((stat, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={isInView ? { scale: 1, opacity: 1 } : {}}
-                      transition={{ delay: index * 0.1 + 0.5, duration: 0.6 }}
-                      className="text-center"
-                    >
-                      <div className="font-heading font-bold text-3xl lg:text-4xl gradient-text mb-2">
-                        {stat.number}
-                      </div>
-                      <div className="text-sm text-text-secondary leading-snug">
-                        {stat.label}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={isInView ? { y: 0, opacity: 1 } : {}}
-                  transition={{ delay: 0.8, duration: 0.6 }}
-                  className="mt-8 pt-8 border-t border-dark-surface-2/50"
-                >
-                  <p className="text-text-secondary text-center italic">
-                    "Passionate about creating digital experiences that users love and developers can maintain."
-                  </p>
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
+          ABOUT ME
+        </div>
       </div>
-    </section>
-  )
-}
 
-export default About
+      {/* Main content */}
+      <div className="max-w-4xl mx-auto relative" style={{ zIndex: 1 }}>
+        {/* Optional section label */}
+        <div className="mb-8">
+          <span className="text-secondary-text/60 text-xs font-mono uppercase tracking-widest">
+            02 — Philosophy
+          </span>
+        </div>
+
+        {/* Section heading */}
+        <h2
+          ref={headingRef}
+          className="font-display font-medium text-primary-text mb-16"
+          style={{
+            fontSize: "clamp(2rem, 5vw, 3.5rem)",
+            lineHeight: "1.2",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Design is about making the complex feel simple
+        </h2>
+
+        {/* Content */}
+        <div ref={contentRef} className="space-y-8">
+          {/* Core philosophy paragraph */}
+          <p
+            className="text-primary-text font-sans max-w-3xl"
+            style={{
+              fontSize: "clamp(1.1rem, 2.5vw, 1.3rem)",
+              lineHeight: "1.7",
+              letterSpacing: "0.005em",
+            }}
+          >
+            I approach every project with the belief that great design serves
+            people first, technology second. My work focuses on creating
+            experiences that feel effortless, even when solving complex
+            problems. This means prioritizing user needs, designing with
+            empathy, and building systems that scale gracefully.
+          </p>
+
+          {/* Design principle statements */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
+            <div className="space-y-3">
+              <h3 className="font-sans font-medium text-primary-text text-lg">
+                User-Centered
+              </h3>
+              <p className="text-secondary-text text-base leading-relaxed">
+                Every design decision starts with understanding real user needs
+                and behaviors, not assumptions.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="font-sans font-medium text-primary-text text-lg">
+                Systems Thinking
+              </h3>
+              <p className="text-secondary-text text-base leading-relaxed">
+                I design components and patterns that work consistently across
+                products and scale with teams.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="font-sans font-medium text-primary-text text-lg">
+                Purposeful Simplicity
+              </h3>
+              <p className="text-secondary-text text-base leading-relaxed">
+                Complexity should be hidden from users, not eliminated from the
+                solution—elegant solutions feel simple.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Subtle warm gradient overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 30% 70%, rgba(199, 240, 0, 0.03) 0%, transparent 50%)",
+          zIndex: 0,
+        }}
+      />
+    </section>
+  );
+};
+
+export default About;

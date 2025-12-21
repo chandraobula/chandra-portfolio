@@ -1,197 +1,218 @@
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { useRef, useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Experience = () => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const sectionRef = useRef(null);
+  const timelineRef = useRef(null);
 
   const experiences = [
     {
-      id: 1,
+      id: "inferlabs",
+      period: "Present",
+      role: "UI/UX Design Lead",
+      company: "InferLabs AI",
+      type: "Product Design",
+      description:
+        "Leading design system development for AI-powered analytics platform. Created comprehensive component library and user experience framework.",
+      achievements: [
+        "Built design system serving 10+ product teams",
+        "Reduced design-dev handoff time by 60%",
+        "Established UX research methodology",
+      ],
+    },
+    {
+      id: "fullstack",
+      period: "2022-2024",
       role: "Full Stack Developer",
-      company: "InferAI",
-      period: "2023 - Present",
-      type: "Full-Time",
-      location: "Remote",
-      description: "Leading full-stack development of AI-powered applications using React, Java, and cloud technologies. Collaborating with cross-functional teams to deliver scalable enterprise solutions.",
+      company: "Multiple Projects",
+      type: "Development",
+      description:
+        "Developed enterprise applications across healthcare, fintech, and corporate sectors using Java, Python, and modern web technologies.",
       achievements: [
-        "Architected and developed 3+ production-ready AI applications",
-        "Improved application performance by 40% through optimization", 
-        "Led UI/UX design initiatives for better user experience"
+        "5+ production applications deployed",
+        "Built microservices architecture",
+        "Led technical mentoring for junior developers",
       ],
-      technologies: ["React", "Java", "AWS", "Python", "Docker"]
     },
     {
-      id: 2,
-      role: "Junior Software Engineer", 
-      company: "Infer Solutions",
-      period: "2022 - 2023",
-      type: "Full-Time",
-      location: "Hybrid",
-      description: "Developed and maintained enterprise web applications while transitioning into UI/UX design. Gained expertise in modern frontend frameworks and design systems.",
+      id: "corporate",
+      period: "2023-2024",
+      role: "Website Designer",
+      company: "Corporate Clients",
+      type: "Web Design",
+      description:
+        "Designed and developed premium websites for established businesses including GlobalTekForce, Bonifore, and consulting firms.",
       achievements: [
-        "Delivered 5+ corporate websites from design to deployment",
-        "Collaborated with clients to understand design requirements",
-        "Established design system and component library"
+        "Delivered 8 corporate websites",
+        "Achieved 95+ Lighthouse scores",
+        "Increased client conversion rates by 40%",
       ],
-      technologies: ["React", "TypeScript", "Figma", "Node.js", "MySQL"]
     },
-    {
-      id: 3,
-      role: "Software Engineering Intern",
-      company: "Infer Solutions", 
-      period: "2021 - 2022",
-      type: "Internship",
-      location: "On-site",
-      description: "Started my journey in software development, learning full-stack technologies and contributing to real-world projects under senior developer mentorship.",
-      achievements: [
-        "Built responsive web applications using modern frameworks",
-        "Gained proficiency in agile development methodologies",
-        "Contributed to open-source internal tools"
-      ],
-      technologies: ["JavaScript", "HTML/CSS", "Java", "Spring Boot", "Git"]
-    }
-  ]
+  ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.3,
-        delayChildren: 0.1
-      }
-    }
-  }
+  useEffect(() => {
+    const section = sectionRef.current;
+    const timeline = timelineRef.current;
 
-  const itemVariants = {
-    hidden: { x: -50, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-        ease: [0.4, 0, 0.2, 1]
-      }
-    }
-  }
+    if (!section || !timeline) return;
+
+    const timelineItems = timeline.querySelectorAll("[data-timeline-item]");
+
+    // Set initial states
+    gsap.set(timelineItems, {
+      opacity: 0,
+      x: -50,
+      scale: 0.95,
+    });
+
+    // Animate timeline items on scroll
+    timelineItems.forEach((item, index) => {
+      ScrollTrigger.create({
+        trigger: item,
+        start: "top 85%",
+        end: "bottom 15%",
+        onEnter: () => {
+          gsap.to(item, {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            duration: 0.8,
+            ease: "power2.out",
+            delay: index * 0.1,
+          });
+        },
+        onLeave: () => {
+          gsap.to(item, {
+            opacity: 0.4,
+            scale: 0.98,
+            duration: 0.3,
+          });
+        },
+        onEnterBack: () => {
+          gsap.to(item, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.5,
+          });
+        },
+      });
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, []);
 
   return (
-    <section id="experience" ref={ref} className="py-24 lg:py-32 relative">
-      <div className="max-w-8xl mx-auto px-6 lg:px-8">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+    <section
+      id="experience"
+      ref={sectionRef}
+      className="relative min-h-screen py-32 bg-primary-bg overflow-hidden"
+    >
+      {/* Background text */}
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+        style={{ zIndex: 0 }}
+      >
+        <h2
+          className="text-[20vw] font-black opacity-[0.02] leading-none whitespace-nowrap"
+          style={{ fontFamily: "Neue Montreal, sans-serif" }}
         >
-          {/* Section Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16 lg:mb-24">
-            <div className="inline-block px-4 py-2 glass-card text-sm font-mono text-electric-blue mb-6">
-              Professional Journey
-            </div>
-            <h2 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl gradient-text mb-6">
-              Experience
-              <br />
-              Timeline
-            </h2>
-            <p className="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
-              My professional growth from <span className="text-text-primary font-medium">software engineering intern</span> to 
-              <span className="text-text-primary font-medium"> full-stack developer</span> and 
-              <span className="text-text-primary font-medium"> UI/UX designer</span>
-            </p>
-          </motion.div>
-
-          {/* Timeline */}
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-electric-blue via-neon-violet to-cyan-highlight opacity-30"></div>
-            
-            <div className="space-y-12 lg:space-y-16">
-              {experiences.map((exp, index) => (
-                <motion.div
-                  key={exp.id}
-                  variants={itemVariants}
-                  className="relative flex items-start space-x-8"
-                >
-                  {/* Timeline dot */}
-                  <div className="relative z-10">
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={isInView ? { scale: 1 } : {}}
-                      transition={{ delay: index * 0.2 + 0.5, duration: 0.5 }}
-                      className="w-4 h-4 bg-gradient-to-r from-electric-blue to-neon-violet rounded-full shadow-lg shadow-electric-blue/30"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-electric-blue to-neon-violet rounded-full animate-ping opacity-20"></div>
-                  </div>
-
-                  {/* Content Card */}
-                  <div className="flex-1">
-                    <motion.div
-                      whileHover={{ y: -4, scale: 1.01 }}
-                      className="glass-card p-6 lg:p-8 group cursor-pointer"
-                    >
-                      {/* Header */}
-                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
-                        <div>
-                          <h3 className="font-heading font-bold text-xl lg:text-2xl text-text-primary group-hover:gradient-text transition-all duration-300">
-                            {exp.role}
-                          </h3>
-                          <div className="flex items-center space-x-3 mt-1">
-                            <span className="text-lg font-medium gradient-text">{exp.company}</span>
-                            <span className="px-2 py-1 bg-electric-blue/10 text-electric-blue rounded text-xs font-mono">
-                              {exp.type}
-                            </span>
-                          </div>
-                        </div>
-                        
-                        <div className="text-right mt-2 lg:mt-0">
-                          <div className="font-mono text-text-secondary">{exp.period}</div>
-                          <div className="text-sm text-text-secondary">{exp.location}</div>
-                        </div>
-                      </div>
-
-                      {/* Description */}
-                      <p className="text-text-secondary leading-relaxed mb-6">
-                        {exp.description}
-                      </p>
-
-                      {/* Achievements */}
-                      <div className="mb-6">
-                        <h4 className="font-medium text-text-primary mb-3">Key Achievements:</h4>
-                        <ul className="space-y-2">
-                          {exp.achievements.map((achievement, i) => (
-                            <li key={i} className="flex items-start space-x-3 text-text-secondary">
-                              <svg className="w-5 h-5 text-electric-blue mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                              </svg>
-                              <span>{achievement}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Technologies */}
-                      <div>
-                        <h4 className="font-medium text-text-primary mb-3">Technologies:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {exp.technologies.map((tech) => (
-                            <span key={tech} className="px-3 py-1 bg-neon-violet/10 text-neon-violet rounded-full text-sm font-mono">
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+          EXPERIENCE
+        </h2>
       </div>
-    </section>
-  )
-}
 
-export default Experience
+      <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-8">
+        {/* Section header */}
+        <div className="mb-20">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-primary-text">
+            Professional Journey
+          </h2>
+          <p className="text-lg text-secondary-text max-w-2xl leading-relaxed">
+            A focused progression through design and development, building
+            expertise at the intersection of user experience and technical
+            execution.
+          </p>
+        </div>
+
+        {/* Timeline */}
+        <div ref={timelineRef} className="relative">
+          {/* Vertical line */}
+          <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-accent/20 via-accent/40 to-accent/20" />
+
+          <div className="space-y-16">
+            {experiences.map((exp, index) => (
+              <div
+                key={exp.id}
+                data-timeline-item
+                className="relative flex items-start gap-8"
+              >
+                {/* Timeline dot */}
+                <div className="relative flex-shrink-0">
+                  <div className="w-4 h-4 bg-accent rounded-full border-4 border-primary-bg shadow-lg shadow-accent/20" />
+                  <div className="absolute inset-0 w-4 h-4 bg-accent rounded-full animate-ping opacity-20" />
+                </div>
+
+                {/* Content card */}
+                <div className="flex-1 bg-secondary-bg/60 backdrop-blur-sm border border-accent/10 rounded-2xl p-8 hover:border-accent/20 transition-colors duration-300">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+                    <div>
+                      <h3 className="text-xl font-bold text-primary-text mb-1">
+                        {exp.role}
+                      </h3>
+                      <p className="text-accent font-medium">{exp.company}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="inline-block px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium">
+                        {exp.period}
+                      </span>
+                      <p className="text-sm text-secondary-text mt-1">
+                        {exp.type}
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="text-secondary-text mb-6 leading-relaxed">
+                    {exp.description}
+                  </p>
+
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold text-primary-text uppercase tracking-wide">
+                      Key Achievements
+                    </h4>
+                    <ul className="space-y-2">
+                      {exp.achievements.map((achievement, idx) => (
+                        <li
+                          key={idx}
+                          className="flex items-start gap-2 text-secondary-text"
+                        >
+                          <span className="w-1 h-1 bg-accent rounded-full mt-2.5 flex-shrink-0" />
+                          <span className="text-sm">{achievement}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Subtle gradient overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 70% 30%, rgba(199, 240, 0, 0.02) 0%, transparent 50%)",
+          zIndex: 0,
+        }}
+      />
+    </section>
+  );
+};
+
+export default Experience;

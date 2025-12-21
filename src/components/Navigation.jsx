@@ -1,89 +1,109 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const Navigation = () => {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [activeSection, setActiveSection] = useState('hero')
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100)
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
     }
+  };
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const navItems = [
-    { label: 'Work', href: '#showcases' },
-    { label: 'Experience', href: '#experience' },
-    { label: 'Skills', href: '#skills' },
-    { label: 'Projects', href: '#projects' },
-    { label: 'Contact', href: '#contact' }
-  ]
+  const containerVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      },
+    },
+  };
 
   return (
     <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled 
-          ? 'bg-dark-surface/80 backdrop-blur-md border-b border-dark-surface-2/50' 
-          : 'bg-transparent'
-      }`}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="fixed top-8 inset-x-0 mx-auto w-fit z-50"
     >
-      <div className="max-w-8xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="font-heading font-bold text-xl gradient-text"
-          >
-            Chandra
-          </motion.div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item, index) => (
-              <motion.a
-                key={item.label}
-                href={item.href}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 + 0.3 }}
-                whileHover={{ y: -2 }}
-                className="text-text-secondary hover:text-text-primary transition-colors duration-300 font-medium"
-              >
-                {item.label}
-              </motion.a>
-            ))}
-            
-            <motion.a
-              href="#contact"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.8 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="btn-primary ml-4"
-            >
-              Let's Connect
-            </motion.a>
+      <motion.div
+        animate={{
+          scale: isScrolled ? 0.95 : 1,
+          opacity: isScrolled ? 0.9 : 1,
+        }}
+        className="bg-white/80 backdrop-blur-md border border-white/20 rounded-full px-6 py-3 shadow-lg flex items-center justify-center"
+      >
+        <div className="flex items-center justify-center space-x-12">
+          {/* Avatar + Name */}
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
+              <span className="text-primary-text font-medium text-sm">CR</span>
+            </div>
+            <span className="text-primary-text font-medium text-sm whitespace-nowrap">
+              Chandra Reddy
+            </span>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Navigation Links */}
+          <div className="flex items-center space-x-8">
+            <motion.button
+              onClick={() => scrollToSection("recent-work")}
+              whileHover={{ color: "#C7F000" }}
+              className="text-primary-text text-sm font-medium transition-colors hover:cursor-pointer"
+            >
+              Work
+            </motion.button>
+            <motion.button
+              onClick={() => scrollToSection("experience")}
+              whileHover={{ color: "#C7F000" }}
+              className="text-primary-text text-sm font-medium transition-colors hover:cursor-pointer"
+            >
+              Experience
+            </motion.button>
+            <motion.button
+              onClick={() => scrollToSection("journey")}
+              whileHover={{ color: "#C7F000" }}
+              className="text-primary-text text-sm font-medium transition-colors hover:cursor-pointer"
+            >
+              Journey
+            </motion.button>
+            <motion.button
+              onClick={() => scrollToSection("skills")}
+              whileHover={{ color: "#C7F000" }}
+              className="text-primary-text text-sm font-medium transition-colors hover:cursor-pointer"
+            >
+              Skills
+            </motion.button>
+          </div>
+
+          {/* CTA Button */}
           <motion.button
-            whileTap={{ scale: 0.95 }}
-            className="md:hidden p-2 text-text-primary"
+            onClick={() => scrollToSection("contact")}
+            whileHover={{
+              backgroundColor: "#B8F500",
+              scale: 1.02,
+            }}
+            className="bg-accent text-primary-text px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+            Contact
           </motion.button>
         </div>
-      </div>
+      </motion.div>
     </motion.nav>
-  )
-}
+  );
+};
 
-export default Navigation
+export default Navigation;
