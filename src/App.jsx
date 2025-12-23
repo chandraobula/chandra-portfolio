@@ -20,11 +20,11 @@ function App() {
         {/* 2. About Me - Philosophy-first */}
         <About />
 
-        {/* 3. Experience - Minimal vertical timeline */}
-        <Experience />
-
         {/* 4. Recent Work - Case-study cards */}
         <RecentWork />
+
+        {/* 3. Experience - Minimal vertical timeline */}
+        <Experience />
 
         {/* 5. Skills - Capability buckets */}
         <Skills />

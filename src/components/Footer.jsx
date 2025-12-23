@@ -252,7 +252,7 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 max-w-4xl mx-auto leading-tight text-justify"
+            className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 max-w-4xl mx-auto leading-tight text-start"
             style={{ fontFamily: "Neue Montreal, sans-serif" }}
           >
             <span className="inline-block">Let's </span>
@@ -260,7 +260,10 @@ const Footer = () => {
               ref={wordsRef}
               className="inline-block relative bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent min-w-[150px] md:min-w-[200px] text-left"
               style={{ display: "inline-block" }}
-            ></span>
+            >
+              {" "}
+            </span>
+            {""}
             <br />
             <span className="text-gray-500">incredible work together.</span>
           </motion.h2>
@@ -281,7 +284,7 @@ const Footer = () => {
             </h3>
             <a
               href="mailto:chandraobulareddy.theegala@gmail.com"
-              className="text-sm font-medium hover:text-accent transition-colors duration-300"
+              className="text-sm font-medium hover:text-cyan-400 transition-colors duration-300"
             >
               chandraobulareddy.theegala@gmail.com
             </a>
@@ -300,7 +303,7 @@ const Footer = () => {
             </h3>
             <a
               href="#"
-              className="text-sm font-medium hover:text-accent transition-colors duration-300"
+              className="text-sm font-medium hover:text-cyan-400 transition-colors duration-300"
             >
               Book Now
             </a>
@@ -334,7 +337,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto justify-between">
+        <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto justify-between mb-12">
           {/* <div className="flex flex-col md:flex-row justify-between items-center"> */}
           <div className="text-white text-sm mb-4 md:mb-0">
             Based in Hyderabad, India
@@ -349,10 +352,13 @@ const Footer = () => {
       </div>
       <div className="absolute bottom-0 left-0 right-0 pointer-events-none select-none">
         <div
-          className="text-[18vw] font-black leading-none text-white opacity-[0.08] text-center"
+          className="text-[18vw] font-black leading-none text-white text-center mb-[-5%] mt-6 relative"
           style={{ fontFamily: "Neue Montreal, sans-serif" }}
         >
           CHANDRA
+          {/* Glassy Shade Effect */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[40%] bg-gradient-to-t from-white/10 to-transparent blur-2xl rounded-t-full" />
+          <div className="absolute bottom-[20%] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
         </div>
       </div>
     </footer>

@@ -68,27 +68,21 @@ const RecentWork = () => {
     // Set initial states
     gsap.set(cardElements, {
       opacity: 0,
-      y: 100,
-      scale: 0.9,
+      y: 50,
     });
 
-    // Animate cards on scroll
-    cardElements.forEach((card, index) => {
-      ScrollTrigger.create({
-        trigger: card,
-        start: "top 85%",
-        end: "bottom 15%",
-        onEnter: () => {
-          gsap.to(card, {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 1,
-            ease: "power2.out",
-            delay: index * 0.2,
-          });
-        },
-      });
+    // Animate cards on scroll using Batch for grid
+    ScrollTrigger.batch(cardElements, {
+      start: "top 85%",
+      onEnter: (batch) =>
+        gsap.to(batch, {
+          opacity: 1,
+          y: 0,
+          stagger: 0.15,
+          duration: 0.8,
+          ease: "power2.out",
+        }),
+      once: true,
     });
 
     return () => {
@@ -122,124 +116,102 @@ const RecentWork = () => {
             Recent Work
           </h2>
           <p className="text-lg text-secondary-text max-w-2xl leading-relaxed">
-            Case studies showcasing design thinking, technical execution, and
-            measurable business impact across platforms and industries.
+            Selected projects demonstrating technical expertise and design thinking.
           </p>
         </div>
 
-        {/* Project cards */}
-        <div ref={cardsRef} className="space-y-12">
-          {projects.map((project, index) => (
+        {/* Project cards Grid */}
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10"
+        >
+          {projects.map((project) => (
             <div
               key={project.id}
               data-project-card
-              className="group"
-              onMouseEnter={() => setHoveredCard(project.id)}
-              onMouseLeave={() => setHoveredCard(null)}
+              className="group flex flex-col bg-secondary-bg/40 backdrop-blur-sm border border-accent/10 rounded-3xl overflow-hidden hover:border-accent/20 transition-all duration-500 hover:bg-secondary-bg/60 hover:-translate-y-1 hover:shadow-xl hover:shadow-accent/5"
             >
-              <div className="bg-secondary-bg/40 backdrop-blur-sm border border-accent/10 rounded-3xl overflow-hidden hover:border-accent/20 transition-all duration-500 hover:bg-secondary-bg/60">
-                <div className="grid lg:grid-cols-2 gap-0">
-                  {/* Content side */}
-                  <div className="p-8 lg:p-12 flex flex-col justify-center order-2 lg:order-1">
-                    <div className="mb-6">
-                      <div className="flex items-center gap-4 mb-4">
-                        <span className="px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium">
-                          {project.category}
-                        </span>
-                        <span className="text-secondary-text text-sm">
-                          {project.year}
-                        </span>
-                      </div>
-                      <h3 className="text-2xl lg:text-3xl font-bold text-primary-text mb-4 group-hover:text-accent transition-colors">
-                        {project.title}
-                      </h3>
-                      <p className="text-secondary-text leading-relaxed mb-8">
-                        {project.description}
-                      </p>
-                    </div>
+              {/* Image Section - Medium Height */}
+              <div className="relative h-64 lg:h-72 overflow-hidden shrink-0">
+                <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-accent/5 group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 flex items-center justify-center text-secondary-text/20">
+                  <span className="text-5xl font-black">
+                    {project.category.split(" ")[0]}
+                  </span>
+                </div>
+                {/* Overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-secondary-bg/80 via-transparent to-transparent opacity-60" />
 
-                    <div className="space-y-6 mb-8">
-                      <div>
-                        <h4 className="text-sm font-semibold text-primary-text uppercase tracking-wide mb-2">
-                          Challenge
-                        </h4>
-                        <p className="text-secondary-text text-sm leading-relaxed">
-                          {project.challenge}
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-semibold text-primary-text uppercase tracking-wide mb-2">
-                          Solution
-                        </h4>
-                        <p className="text-secondary-text text-sm leading-relaxed">
-                          {project.solution}
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-semibold text-primary-text uppercase tracking-wide mb-2">
-                          Impact
-                        </h4>
-                        <p className="text-accent text-sm font-medium">
-                          {project.impact}
-                        </p>
-                      </div>
-                    </div>
+                {/* Pill Top Left */}
+                <div className="absolute top-6 left-6 z-10">
+                  <span className="px-3 py-1 bg-secondary-bg/90 backdrop-blur text-accent rounded-full text-xs font-semibold border border-accent/10">
+                    {project.category}
+                  </span>
+                </div>
+              </div>
 
-                    <div className="mb-8">
-                      <h4 className="text-sm font-semibold text-primary-text uppercase tracking-wide mb-3">
-                        Technologies
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {project.technologies.map((tech, idx) => (
-                          <span
-                            key={idx}
-                            className="px-3 py-1 bg-accent/5 text-secondary-text border border-accent/10 rounded-full text-xs"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+              {/* Content Section */}
+              <div className="p-8 flex flex-col flex-grow">
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-2xl font-bold text-primary-text group-hover:text-accent transition-colors">
+                    {project.title}
+                  </h3>
+                  <span className="text-secondary-text text-sm font-mono opacity-80 mt-1">
+                    {project.year}
+                  </span>
+                </div>
 
-                    {project.link !== "#" && (
-                      <div>
-                        <a
-                          href={project.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-accent hover:text-primary-text transition-colors font-medium"
+                <p className="text-secondary-text leading-relaxed mb-6 line-clamp-3">
+                  {project.description}
+                </p>
+
+                {/* Tech Stack */}
+                <div className="flex flex-wrap gap-2 mb-8 mt-auto">
+                  {project.technologies.slice(0, 4).map((tech, idx) => (
+                    <span
+                      key={idx}
+                      className="px-2 py-1 bg-primary-bg/50 text-secondary-text/80 border border-white/10 rounded text-xs"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Footer / Link */}
+                <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/5">
+                  <div>
+                    <span className="block text-xs uppercase tracking-wider text-secondary-text/60 mb-1">
+                      Impact
+                    </span>
+                    <span className="text-sm font-medium text-primary-text">
+                      {project.impact.split(",")[0]}
+                    </span>
+                  </div>
+                  {project.link !== "#" && (
+                    <div className="flex justify-end items-center">
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm text-primary-text hover:text-accent transition-colors font-medium group/link"
+                      >
+                        Case Study
+                        <svg
+                          className="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                         >
-                          View Project
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                            />
-                          </svg>
-                        </a>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Image side */}
-                  <div className="relative overflow-hidden order-1 lg:order-2 min-h-[300px] lg:min-h-[500px]">
-                    <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-accent/5" />
-                    <div className="absolute inset-0 flex items-center justify-center text-secondary-text/20">
-                      <span className="text-6xl font-black">
-                        {project.category.split(" ")[0]}
-                      </span>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                          />
+                        </svg>
+                      </a>
                     </div>
-                    {hoveredCard === project.id && (
-                      <div className="absolute inset-0 bg-accent/5 backdrop-blur-sm" />
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -252,7 +224,7 @@ const RecentWork = () => {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle at 80% 20%, rgba(199, 240, 0, 0.03) 0%, transparent 50%)",
+            "radial-gradient(circle at 20% 80%, rgba(199, 240, 0, 0.03) 0%, transparent 50%)",
           zIndex: 0,
         }}
       />
